@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 8rem 5% 4rem; max-width: 500px; margin: 0 auto; min-height: 80vh;">
+    <div class="section-header">
+        <h2>Create Account</h2>
+        <p style="color: var(--secondary); margin-top: 1rem;">Join AURA to track your orders and fast checkout.</p>
+    </div>
+
+    {% if error %}
+    <div style="background-color: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 1rem; border-radius: 4px; margin-bottom: 2rem; text-align: center;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="{{ url_for('signup') }}" method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div>
+            <label for="username" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Username or Email</label>
+            <input type="text" id="username" name="username" required style="width: 100%; padding: 1rem; border: 1px solid var(--border); font-family: var(--font-body); background: transparent;">
+        </div>
+        <div>
+            <label for="password" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Password</label>
+            <input type="password" id="password" name="password" required style="width: 100%; padding: 1rem; border: 1px solid var(--border); font-family: var(--font-body); background: transparent;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Create Account</button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+        <p style="color: var(--secondary);">Already have an account? <a href="{{ url_for('login') }}" style="color: var(--primary); text-decoration: underline;">Sign In</a></p>
+    </div>
+</div>
+{% endblock %}

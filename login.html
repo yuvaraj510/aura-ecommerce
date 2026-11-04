@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 8rem 5% 4rem; max-width: 500px; margin: 0 auto; min-height: 80vh;">
+    <div class="section-header">
+        <h2>Sign In</h2>
+        <p style="color: var(--secondary); margin-top: 1rem;">Welcome back to AURA.</p>
+    </div>
+
+    {% if error %}
+    <div style="background-color: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 1rem; border-radius: 4px; margin-bottom: 2rem; text-align: center;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="{{ url_for('login') }}" method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div>
+            <label for="username" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Username or Email</label>
+            <input type="text" id="username" name="username" required style="width: 100%; padding: 1rem; border: 1px solid var(--border); font-family: var(--font-body); background: transparent;">
+        </div>
+        <div>
+            <label for="password" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Password</label>
+            <input type="password" id="password" name="password" required style="width: 100%; padding: 1rem; border: 1px solid var(--border); font-family: var(--font-body); background: transparent;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Sign In</button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+        <p style="color: var(--secondary);">Don't have an account? <a href="{{ url_for('signup') }}" style="color: var(--primary); text-decoration: underline;">Create one</a></p>
+    </div>
+    
+    <div style="text-align: center; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 2rem;">
+        <a href="{{ url_for('admin_login') }}" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Admin Login</a>
+    </div>
+</div>
+{% endblock %}

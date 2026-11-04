@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 8rem 5% 4rem; max-width: 1400px; margin: 0 auto; min-height: 80vh;">
+    <div class="section-header">
+        {% if current_category %}
+            <h2 style="text-transform: capitalize;">{{ current_category }}</h2>
+        {% else %}
+            <h2>All Products</h2>
+        {% endif %}
+        <p style="color: var(--secondary); margin-top: 1rem;">Explore our collection of minimalist essentials.</p>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="category-filters" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;">
+        <a href="{{ url_for('shop') }}" class="btn-filter {% if not current_category %}active{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="{{ url_for('shop', category=cat.id) }}" class="btn-filter {% if current_category == cat.id %}active{% endif %}">{{ cat.name }}</a>
+        {% endfor %}
+    </div>
+
+    {% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <div class="product-image-wrapper">
+                <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="product-image">
+                <div class="product-actions">
+                    <button class="btn-add-cart" data-id="{{ product.id }}">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name"><a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none; color: inherit;">{{ product.name }}</a></h3>
+                <p class="product-price">{{ product.price }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem 0;">
+        <h3 style="color: var(--secondary);">No products found in this category.</h3>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Discount Banner -->
+    <div style="background: #ef4444; color: white; text-align: center; padding: 0.8rem; font-weight: bold; font-size: 0.9rem;">
+        FESTIVAL SALE! Use code AURA20 for 20% off all Indian Wear!
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-image">
+            <img src="{{ url_for('static', filename='images/hero.webp') }}" alt="Aesthetic fashion editorial">
+        </div>
+        <div class="hero-content">
+            <h1 class="fade-up">Effortless Elegance</h1>
+            <p class="fade-up delay-1">Discover our new collection of minimalist, high-quality essentials designed for the modern wardrobe.</p>
+            <a href="{{ url_for('shop') }}" class="btn btn-primary fade-up delay-2">Shop the Collection</a>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories">
+        <div class="section-header">
+            <h2>Shop by Category</h2>
+        </div>
+        <div class="category-grid">
+            {% for category in categories %}
+            <div class="category-card">
+                <img src="{{ url_for('static', filename=category.image) }}" alt="{{ category.name }}">
+                <div class="category-overlay">
+                    <h3>{{ category.name }}</h3>
+                    <a href="{{ url_for('collections') }}" class="shop-link">Shop Now &rarr;</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="products">
+        <div class="section-header">
+            <h2>Featured Arrivals</h2>
+            <a href="{{ url_for('shop') }}" class="view-all">View All</a>
+        </div>
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="product-image">
+                    <div class="product-actions">
+                        <button class="btn-add-cart" data-id="{{ product.id }}">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name"><a href="{{ url_for('product_detail', product_id=product.id) }}" style="text-decoration: none; color: inherit;">{{ product.name }}</a></h3>
+                    <p class="product-price">
+                        {% if product.original_price %}
+                        <span style="text-decoration: line-through; color: var(--secondary); font-size: 0.9em; margin-right: 0.5rem;">{{ product.original_price }}</span>
+                        {% endif %}
+                        {{ product.price }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Brand Value Section -->
+    <section class="brand-values">
+        <div class="values-container">
+            <div class="value-item">
+                <h3>Sustainable Materials</h3>
+                <p>We source only the finest, eco-friendly fabrics that look as good as they feel.</p>
+            </div>
+            <div class="value-item">
+                <h3>Ethical Production</h3>
+                <p>Every piece is crafted in ethical factories ensuring fair wages and safe conditions.</p>
+            </div>
+            <div class="value-item">
+                <h3>Timeless Design</h3>
+                <p>Silhouettes designed to last beyond seasons, not just fleeting trends.</p>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

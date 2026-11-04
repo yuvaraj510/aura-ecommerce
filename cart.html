@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 8rem 5% 4rem; max-width: 1000px; margin: 0 auto; min-height: 80vh;">
+    <div class="section-header" style="text-align: left;">
+        <h2>Your Cart</h2>
+    </div>
+
+    <div id="cart-container" style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Cart items will be dynamically injected here by JS -->
+        <p style="color: var(--secondary);">Loading cart...</p>
+    </div>
+
+    <div id="cart-summary" style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3>Total</h3>
+            <h3 id="cart-total">₹0</h3>
+        </div>
+        <a href="{{ url_for('checkout') }}" class="btn btn-primary" style="width: 100%; text-align: center;">Proceed to Checkout</a>
+    </div>
+    
+    <div id="empty-cart-message" style="display: none; text-align: center; padding: 4rem 0;">
+        <h3 style="margin-bottom: 1rem;">Your cart is empty</h3>
+        <p style="color: var(--secondary); margin-bottom: 2rem;">Looks like you haven't added anything yet.</p>
+        <a href="{{ url_for('shop') }}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+</div>
+{% endblock %}

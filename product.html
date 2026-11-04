@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="product-detail-container" style="padding: 8rem 5% 4rem; max-width: 1200px; margin: 0 auto; min-height: 80vh;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-bottom: 4rem;">
+        <div>
+            <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" style="width: 100%; border-radius: 4px;" class="product-image">
+        </div>
+        <div>
+            <h1 class="product-name" style="margin-bottom: 1rem;">{{ product.name }}</h1>
+            <p class="product-price" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 2rem;">
+                {% if product.original_price %}
+                <span style="text-decoration: line-through; color: var(--secondary); font-size: 0.8em; margin-right: 0.5rem;">{{ product.original_price }}</span>
+                {% endif %}
+                {{ product.price }}
+            </p>
+            <p style="color: var(--secondary); margin-bottom: 2rem;">A minimalist essential perfect for any modern wardrobe. Designed with quality and sustainability in mind.</p>
+            
+            {% if product.category in ['kurti', 'saree', 'suit', 'bottoms'] %}
+            <div style="margin-bottom: 2rem;">
+                <label for="product-size" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Select Size</label>
+                <select id="product-size" class="form-input" style="width: 100%; max-width: 300px;">
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M" selected>M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                    <option value="XXL">XXL</option>
+                </select>
+            </div>
+            {% endif %}
+
+            <button class="btn btn-primary btn-add-cart" data-id="{{ product.id }}" style="width: 100%; padding: 1rem; font-size: 1.1rem; margin-bottom: 1rem;">Add to Cart</button>
+            <p style="font-size: 0.9rem; color: var(--secondary); text-align: center;">Free shipping and easy returns.</p>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div style="border-top: 1px solid var(--border); padding-top: 4rem;">
+        <h2 style="margin-bottom: 2rem;">Customer Reviews</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 4rem;">
+            <!-- Write a review -->
+            <div>
+                <h3 style="margin-bottom: 1.5rem;">Write a Review</h3>
+                <form method="POST" style="display: grid; gap: 1rem;">
+                    <div>
+                        <label>Rating (1-5)</label>
+                        <select name="rating" required class="form-input">
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Good</option>
+                            <option value="3">3 - Average</option>
+                            <option value="2">2 - Poor</option>
+                            <option value="1">1 - Terrible</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Your Review</label>
+                        <textarea name="text" rows="4" required class="form-input" placeholder="What did you think about this product?"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
+            
+            <!-- Read reviews -->
+            <div>
+                {% if reviews %}
+                    <div style="display: grid; gap: 2rem;">
+                    {% for review in reviews %}
+                        <div style="background: var(--background); padding: 1.5rem; border-radius: 4px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <strong>{{ review.user }}</strong>
+                                <span style="color: #fbbf24;">
+                                    {% for i in range(review.rating|int) %}★{% endfor %}
+                                    {% for i in range(5 - review.rating|int) %}☆{% endfor %}
+                                </span>
+                            </div>
+                            <p style="color: var(--secondary);">{{ review.text }}</p>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="color: var(--secondary); text-align: center; padding: 3rem; background: var(--background); border-radius: 4px;">No reviews yet. Be the first to review!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

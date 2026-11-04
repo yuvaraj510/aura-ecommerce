@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 8rem 5% 4rem; max-width: 1000px; margin: 0 auto; min-height: 80vh;">
+    
+    <!-- Step Progress -->
+    <div class="checkout-progress">
+        <div class="step active" id="step1-indicator">1. Address</div>
+        <div class="step" id="step2-indicator">2. Payment</div>
+        <div class="step" id="step3-indicator">3. Confirmation</div>
+    </div>
+
+    <!-- Step 1: Address Form -->
+    <div id="step1-content" class="checkout-step active">
+        <h2 style="margin-bottom: 2rem;">Shipping Details</h2>
+        <form id="address-form" style="display: grid; gap: 1.5rem;">
+            <div>
+                <label>Full Name</label>
+                <input type="text" id="checkout-name" required class="form-input">
+            </div>
+            <div>
+                <label>Street Address</label>
+                <input type="text" id="checkout-street" required class="form-input">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div>
+                    <label>City</label>
+                    <input type="text" id="checkout-city" required class="form-input">
+                </div>
+                <div>
+                    <label>ZIP Code</label>
+                    <input type="text" id="checkout-zip" required class="form-input">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Continue to Payment</button>
+        </form>
+    </div>
+
+    <!-- Step 2: Payment & Review -->
+    <div id="step2-content" class="checkout-step" style="display: none;">
+        <h2 style="margin-bottom: 2rem;">Payment & Review</h2>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 4rem;">
+            
+            <!-- Payment Options -->
+            <div>
+                <h3 style="margin-bottom: 1.5rem;">Shipping Address</h3>
+                <div id="review-address" style="margin-bottom: 3rem; color: var(--secondary); background: var(--background); padding: 1.5rem; border-radius: 4px;">
+                    <!-- JS will populate this -->
+                </div>
+
+                <h3 style="margin-bottom: 1.5rem;">Payment Method</h3>
+                <div class="payment-methods" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                    <div class="payment-method active" data-target="cc-form">Credit Card</div>
+                    <div class="payment-method" data-target="emi-msg">EMI on Card</div>
+                    <div class="payment-method" data-target="paypal-msg">PayPal</div>
+                    <div class="payment-method" data-target="pod-msg">Pay on Delivery</div>
+                </div>
+                
+                <form id="payment-form" style="display: grid; gap: 1.5rem;">
+                    <div>
+                        <label>Card Number</label>
+                        <input type="text" placeholder="XXXX XXXX XXXX XXXX" required class="form-input">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <label>Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" required class="form-input">
+                        </div>
+                        <div>
+                            <label>CVC</label>
+                            <input type="text" placeholder="123" required class="form-input">
+                        </div>
+                    </div>
+                </form>
+
+                <div id="emi-msg" style="display: none; padding: 2rem; border: 1px solid var(--border); text-align: center;">
+                    <h4 style="margin-bottom: 1rem;">Select EMI Duration</h4>
+                    <select id="emi-months" class="form-input" style="margin-bottom: 1rem;">
+                        <option value="3">3 Months (15% p.a.)</option>
+                        <option value="6">6 Months (15% p.a.)</option>
+                        <option value="9">9 Months (15% p.a.)</option>
+                        <option value="12">12 Months (15% p.a.)</option>
+                    </select>
+                    <p id="emi-calculated-amount" style="font-size: 1.2rem; color: var(--primary); font-weight: bold;">₹0.00 / month</p>
+                </div>
+
+                <div id="paypal-msg" style="display: none; padding: 2rem; border: 1px solid var(--border); text-align: center; color: var(--secondary);">
+                    You will be redirected to PayPal to complete your purchase securely after clicking Place Order.
+                </div>
+
+                <div id="pod-msg" style="display: none; padding: 2rem; border: 1px solid var(--border); text-align: center; color: var(--secondary);">
+                    Pay securely with cash or card at your doorstep when your order arrives. No upfront payment required.
+                </div>
+
+                <h3 style="margin-top: 3rem; margin-bottom: 1rem;">Expected Delivery</h3>
+                <p id="delivery-date" style="color: var(--secondary); font-size: 1.1rem; padding: 1rem; background: var(--background); border-radius: 4px;"></p>
+            </div>
+
+            <!-- Order Summary -->
+            <div>
+                <div style="background: var(--background); padding: 2rem; border-radius: 4px;">
+                    <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">Order Summary</h3>
+                    
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                        <input type="text" id="coupon-code" placeholder="Promo Code (e.g. AURA20)" class="form-input" style="padding: 0.8rem;">
+                        <button type="button" id="apply-coupon" class="btn" style="border: 1px solid var(--primary);">Apply</button>
+                    </div>
+                    <p id="coupon-message" style="color: green; font-size: 0.85rem; margin-top: -1rem; margin-bottom: 1.5rem; display: none;">Coupon applied successfully!</p>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--secondary);">
+                        <span>Subtotal</span>
+                        <span id="checkout-subtotal">₹0.00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--secondary);">
+                        <span>Shipping</span>
+                        <span>Free</span>
+                    </div>
+                    <div id="discount-row" style="display: none; justify-content: space-between; margin-bottom: 1rem; color: green;">
+                        <span>Discount</span>
+                        <span id="checkout-discount">-₹0.00</span>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 1.2rem; font-weight: 600;">
+                        <span>Total</span>
+                        <span id="checkout-total">₹0.00</span>
+                    </div>
+
+                    <button type="button" id="place-order-btn" class="btn btn-primary" style="width: 100%; margin-top: 2rem;">Place Order</button>
+                    <button type="button" id="back-to-address" class="btn" style="width: 100%; margin-top: 1rem; background: none; color: var(--secondary); text-decoration: underline;">Back to Address</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: Success -->
+    <div id="step3-content" class="checkout-step" style="display: none; text-align: center; padding: 4rem 0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 2rem;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <h2 style="margin-bottom: 1rem;">Thank You for Your Order!</h2>
+        <p style="color: var(--secondary); font-size: 1.1rem; margin-bottom: 2rem;">Your order number is <strong>#AURA-<span id="order-number"></span></strong>.</p>
+        <p style="color: var(--secondary); margin-bottom: 3rem;">We will send a confirmation email to you shortly.</p>
+        <a href="{{ url_for('shop') }}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 8rem 5% 4rem; max-width: 1000px; margin: 0 auto; min-height: 80vh;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem;">
+        <div>
+            <h2 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 0.5rem;">Welcome, {{ user }}</h2>
+            <p style="color: var(--secondary);">Manage your account and view orders.</p>
+        </div>
+        <a href="{{ url_for('logout') }}" class="btn" style="border: 1px solid var(--border);">Sign Out</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 4rem;">
+        <div>
+            <h3 style="margin-bottom: 1.5rem; font-family: var(--font-body); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px;">Account Details</h3>
+            <p style="margin-bottom: 0.5rem;"><strong>Name:</strong> {{ user }}</p>
+            <p style="color: var(--secondary); margin-bottom: 2rem;">{{ user|lower }}@example.com</p>
+            
+            <h3 style="margin-bottom: 1.5rem; font-family: var(--font-body); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; margin-top: 2rem;">Addresses</h3>
+            <p style="color: var(--secondary);">No saved addresses yet.</p>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 1.5rem; font-family: var(--font-body); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px;">Order History</h3>
+            <div style="padding: 3rem; background-color: var(--background); text-align: center; border-radius: 4px;">
+                <p style="color: var(--secondary); margin-bottom: 1.5rem;">You haven't placed any orders yet.</p>
+                <a href="{{ url_for('shop') }}" class="btn btn-primary">Start Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

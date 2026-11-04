@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 8rem 5% 4rem; max-width: 1400px; margin: 0 auto; min-height: 80vh;">
+    <div class="section-header" style="text-align: left;">
+        <h2>Admin Dashboard</h2>
+        <p style="color: var(--secondary); margin-top: 1rem;">Manage customer orders. Total Orders: {{ orders|length }}</p>
+    </div>
+
+    {% if orders %}
+    <div style="overflow-x: auto;">
+    
+    <!-- Product Management Section -->
+    <div class="section-header" style="text-align: left; margin-top: 4rem;">
+        <h2>Product Management</h2>
+        <p style="color: var(--secondary); margin-top: 1rem;">Add new products or delete existing ones from your store.</p>
+    </div>
+
+    <!-- Add New Product Form -->
+    <div style="background: var(--background); padding: 1.5rem; border-radius: 4px; border: 1px solid var(--border); margin-top: 2rem;">
+        <h3 style="margin-bottom: 1rem;">Add New Product</h3>
+        <form action="{{ url_for('add_product') }}" method="POST" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+            <div style="flex: 1; min-width: 200px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Product Name</label>
+                <input type="text" name="name" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: inherit;">
+            </div>
+            <div style="flex: 1; min-width: 100px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Price (e.g. 499)</label>
+                <input type="number" name="price" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: inherit;">
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Category</label>
+                <select name="category" required style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--background); color: inherit;">
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem;">Add Product</button>
+        </form>
+    </div>
+
+    <!-- Current Products Table -->
+    <div style="overflow-x: auto; margin-top: 2rem;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: var(--background); border-bottom: 2px solid var(--border);">
+                    <th style="padding: 1rem; text-align: left;">Image</th>
+                    <th style="padding: 1rem; text-align: left;">Name</th>
+                    <th style="padding: 1rem; text-align: left;">Category</th>
+                    <th style="padding: 1rem; text-align: left;">Price</th>
+                    <th style="padding: 1rem; text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 1rem;">
+                        <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                    </td>
+                    <td style="padding: 1rem; font-weight: bold;">{{ product.name }}</td>
+                    <td style="padding: 1rem;">{{ product.category }}</td>
+                    <td style="padding: 1rem;">{{ product.price }}</td>
+                    <td style="padding: 1rem; text-align: right;">
+                        <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete {{ product.name }}?');">
+                            <button type="submit" style="background: #ef4444; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="section-header" style="text-align: left; margin-top: 6rem;">
+        <h2>Order Management</h2>
+    </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 2rem;">
+            <thead>
+                <tr style="background: var(--background); border-bottom: 2px solid var(--border);">
+                    <th style="padding: 1rem; text-align: left;">Order ID</th>
+                    <th style="padding: 1rem; text-align: left;">Customer</th>
+                    <th style="padding: 1rem; text-align: left;">Items</th>
+                    <th style="padding: 1rem; text-align: left;">Total</th>
+                    <th style="padding: 1rem; text-align: left;">Payment Method</th>
+                    <th style="padding: 1rem; text-align: left;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 1rem;">#AURA-{{ order.id }}</td>
+                    <td style="padding: 1rem;">{{ order.user }}</td>
+                    <td style="padding: 1rem; color: var(--secondary); font-size: 0.9rem;">
+                        <ul style="padding-left: 1rem; margin: 0;">
+                        {% for item in order['items'] %}
+                            <li>{{ item.quantity }}x {{ item.name }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="padding: 1rem; font-weight: bold;">{{ order.total }}</td>
+                    <td style="padding: 1rem;">{{ order.payment_method }}</td>
+                    <td style="padding: 1rem;">
+                        <form action="{{ url_for('update_order_status', order_id=order.id) }}" method="POST" style="display: flex; gap: 0.5rem; align-items: center;">
+                            <select name="status" style="padding: 0.25rem; border: 1px solid var(--border); border-radius: 4px;">
+                                <option value="Placed" {% if order.status == 'Placed' %}selected{% endif %}>Placed</option>
+                                <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                                <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                            </select>
+                            <button type="submit" class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem 0; background: var(--background); border-radius: 4px; margin-top: 2rem;">
+        <h3 style="color: var(--secondary);">No orders placed yet.</h3>
+    </div>
+    {% endif %}
+
+    <!-- Reviews Section -->
+    <div class="section-header" style="text-align: left; margin-top: 6rem;">
+        <h2>Customer Feedback</h2>
+        <p style="color: var(--secondary); margin-top: 1rem;">Recent product reviews from customers.</p>
+    </div>
+
+    {% if all_reviews %}
+    <div style="display: grid; gap: 1.5rem; margin-top: 2rem;">
+        {% for review in all_reviews %}
+        <div style="background: var(--background); padding: 1.5rem; border-radius: 4px; border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; align-items: center;">
+                <div>
+                    <strong>{{ review.user }}</strong> <span style="color: var(--secondary); margin-left: 0.5rem;">on {{ review.product_name }}</span>
+                </div>
+                <span style="color: #fbbf24; font-size: 1.2rem;">
+                    {% for i in range(review.rating|int) %}★{% endfor %}
+                    {% for i in range(5 - review.rating|int) %}☆{% endfor %}
+                </span>
+            </div>
+            <p style="color: var(--secondary); margin-top: 1rem;">"{{ review.text }}"</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem 0; background: var(--background); border-radius: 4px; margin-top: 2rem;">
+        <h3 style="color: var(--secondary);">No reviews submitted yet.</h3>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
